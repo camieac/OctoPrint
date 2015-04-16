@@ -244,6 +244,86 @@
                             </div>
                         </div>
                     </div>
+					<div class="accordion-group" id="request_accordion">
+                        <div class="accordion-heading">
+                            <a class="accordion-toggle" data-toggle="collapse" href="#requests"><i class="icon-list"></i> Requests</a>
+
+                            <div class="settings-trigger accordion-heading-button btn-group">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                    <span class="icon-wrench"></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#" data-bind="click: function() { $root.listHelper.changeSorting('name'); }"><i class="icon-ok" data-bind="style: {visibility: listHelper.currentSorting() == 'name' ? 'visible' : 'hidden'}"></i> Sort by name (ascending)</a></li>
+                                    <li><a href="#" data-bind="click: function() { $root.listHelper.changeSorting('upload'); }"><i class="icon-ok" data-bind="style: {visibility: listHelper.currentSorting() == 'upload' ? 'visible' : 'hidden'}"></i> Sort by upload date (descending)</a></li>
+                                    <li><a href="#" data-bind="click: function() { $root.listHelper.changeSorting('size'); }"><i class="icon-ok" data-bind="style: {visibility: listHelper.currentSorting() == 'size' ? 'visible' : 'hidden'}"></i> Sort by file size (descending)</a></li>
+                  
+                                    <li class="divider"></li>
+                                    <li><a href="#" data-bind="click: function() { $root.listHelper.toggleFilter('printed'); }"><i class="icon-ok" data-bind="style: {visibility: _.contains(listHelper.currentFilters(), 'printed') ? 'visible' : 'hidden'}"></i> Hide successfully printed files</a></li>
+                                </ul>
+                            </div>
+
+                         
+                        </div>
+                        <div class="accordion-body collapse in overflow_visible" id="files">
+                            <div class="accordion-inner">
+                                <table class="table table-condensed table-hover" id="gcode_files">
+                                    <thead>
+                                        <tr>
+                                            <th class="gcode_files_name">Name</th>
+                                            <th class="gcode_files_size">Size</th>
+                                            <th class="gcode_files_action">Action</th>
+											<th class="gcode_notes_action">Notes</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody data-bind="foreach: listHelper.paginatedItems">
+                                        <tr data-bind="css: $root.getSuccessClass($data), style: { 'font-weight': $root.listHelper.isSelected($data) ? 'bold' : 'normal' }, popover: { title: name, animation: true, html: true, placement: 'right', trigger: 'hover', delay: 0, content: $root.getPopoverContent($data), html: true }">
+                                            <td class="gcode_files_name" data-bind="text: name"></td>
+                                            <td class="gcode_files_size" data-bind="text: formatSize(size)"></td>
+                                            <td class="gcode_files_action">
+                                                <a href="#" class="icon-trash" title="Remove" data-bind="click: function() { if ($root.enableRemove($data)) { $root.removeFile($data.name); } else { return; } }, css: {disabled: !$root.enableRemove($data)}"></a>&nbsp;|&nbsp;<a href="#" class="icon-folder-open" title="Load" data-bind="click: function() { if ($root.enableSelect($data)) { $root.loadFile($data.name, false); } else { return; } }, css: {disabled: !$root.enableSelect($data)}"></a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="pagination pagination-mini pagination-centered">
+                                    <ul>
+                                        <li data-bind="css: {disabled: listHelper.currentPage() === 0}"><a href="#" data-bind="click: listHelper.prevPage">«</a></li>
+                                    </ul>
+                                    <ul data-bind="foreach: listHelper.pages">
+                                        <li data-bind="css: { active: $data.number === $root.listHelper.currentPage(), disabled: $data.number === -1 }"><a href="#" data-bind="text: $data.text, click: function() { $root.listHelper.changePage($data.number); }"></a></li>
+                                    </ul>
+                                    <ul>
+                                        <li data-bind="css: {disabled: listHelper.currentPage() === listHelper.lastPage()}"><a href="#" data-bind="click: listHelper.nextPage">»</a></li>
+                                    </ul>
+                                </div>
+                                <div style="display: none;" data-bind="visible: loginState.isUser">
+                                    <div class="row-fluid upload-buttons">
+                                        {% if enableSdSupport %}
+                                        <span class="btn btn-primary fileinput-button span6" data-bind="css: {disabled: !$root.loginState.isUser()}" style="margin-bottom: 10px">
+                                            <i class="icon-upload-alt icon-white"></i>
+                                            <span>Upload</span>
+                                            <input id="gcode_upload" type="file" name="file" class="fileinput-button" data-bind="enable: loginState.isUser()">
+                                        </span>
+                                        <span class="btn btn-primary fileinput-button span6" data-bind="css: {disabled: !$root.loginState.isUser() || !$root.isSdReady()}" style="margin-bottom: 10px">
+                                            <i class="icon-upload-alt icon-white"></i>
+                                            <span>Upload to SD</span>
+                                            <input id="gcode_upload_sd" type="file" name="file" class="fileinput-button" data-bind="enable: loginState.isUser() && isSdReady()">
+                                        </span>
+                                        {% else %}
+                                        <span class="btn btn-primary fileinput-button span12" data-bind="css: {disabled: !$root.loginState.isUser()}" style="margin-bottom: 10px">
+                                            <i class="icon-upload-alt icon-white"></i>
+                                            <span>Upload</span>
+                                            <input id="gcode_upload" type="file" name="file" class="fileinput-button" data-bind="enable: loginState.isUser()">
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                    <div id="gcode_upload_progress" class="progress" style="width: 100%;">
+                                        <div class="bar" style="width: 0%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="span8 tabbable">

@@ -131,7 +131,7 @@ class Server():
 		self._initLogging(self._debug)
 		logger = logging.getLogger(__name__)
 
-		logger.info("Starting OctoPrint %s" % DISPLAY_VERSION)
+		logger.info("Starting OctoPrint poops %s" % DISPLAY_VERSION)
 
 		eventManager = events.eventManager()
 		gcodeManager = gcodefiles.GcodeManager()
